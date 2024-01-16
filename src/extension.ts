@@ -20,7 +20,7 @@ export function activate(context: vscode.ExtensionContext) {
             let filePath = activeEditor.document.uri.fsPath;
             // Execute the shell command `echo ${filePath}`.
             // This will print the file path of the active text editor.
-            cp.exec(`eval $(yq .run-command "${filePath}")`, (err, stdout, stderr) => {
+            cp.exec(`eval "$(echo "$(sed -n '/---/,/---/p' "${filePath}" | sed '/---/d')" | yq '.run-command' -)"`, (err, stdout, stderr) => {
                 // If there's an error executing the command, show an error message.
                 if (err) {
                     vscode.window.showErrorMessage(`Error: ${err.message}`);
