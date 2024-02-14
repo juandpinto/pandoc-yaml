@@ -9,6 +9,6 @@ Example YAML frontmatter:
 title: "A really awesome document"
 authors:
   - Juan D. Pinto
-run-command: "pandoc '/Users/juanpinto/Documents/doc.md' -o '/Users/juanpinto/Documents/doc.pdf'"
+run-command: "pandoc '/Users/juanpinto/Documents/doc.md' -o '/Users/juanpinto/Documents/doc.pdf' --pdf-engine=xelatex --citeproc"
 ---
 ``````

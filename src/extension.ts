@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 // Import the child_process module. This allows us to run shell commands from within our extension.
 import * as cp from 'child_process';
+import * as path from 'path';
 
 // This method is called when your extension is activated.
 // Your extension is activated the very first time the command is executed.
@@ -18,16 +19,19 @@ export function activate(context: vscode.ExtensionContext) {
         if (activeEditor) {
             // Get the file path of the active text editor.
             let filePath = activeEditor.document.uri.fsPath;
+            let dirPath = path.dirname(filePath);
             // Execute the shell command `echo ${filePath}`.
             // This will print the file path of the active text editor.
-            cp.exec(`eval "$(echo "$(sed -n '/---/,/---/p' "${filePath}" | sed '/---/d')" | yq '.run-command' -)"`, (err, stdout, stderr) => {
+            cp.exec(`eval "$(sed -n '1,/^---$/p' "${filePath}" | sed '/^---$/d' | yq '.run-command' -)"`, { cwd: dirPath }, (err, stdout, stderr) => {
                 // If there's an error executing the command, show an error message.
                 if (err) {
                     vscode.window.showErrorMessage(`Error: ${err.message}`);
+                    console.error(err.message);
                 }
                 // If the command outputs to stderr, show an error message.
                 else if (stderr) {
                     vscode.window.showErrorMessage(`Error: ${stderr}`);
+                    console.error(stderr);
                 }
                 // If the command outputs to stdout, show an information message with the output.
                 else {
